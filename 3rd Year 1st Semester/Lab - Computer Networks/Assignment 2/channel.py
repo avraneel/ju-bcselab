@@ -19,7 +19,7 @@ def handle_client(conn, addr):
     
     connected = True
 #while connected:
-    msg = conn.recv(25).decode()
+    msg = conn.recv(25).decode('utf-8')
     print(f"[{addr}] {msg}")
     #if DISCONNECT == msg:
         #break

@@ -86,7 +86,7 @@ def lrc():
 def crc():
 
     res = []
-    divisor = '11000110011'
+    divisor = '11000110011' #
 
     with open('files/sender.txt', 'r') as f:
         data_frame = f.read()

@@ -1,24 +1,41 @@
 import socket
-
-PORT = 8080
-SERVER = socket.gethostbyname(socket.gethostname())
-ADDR = (SERVER, PORT)
-
-N_SIZE = 2
-LENGTH_SIZE = 3
-DATA_SIZE = 20
+import time
+import random
+import operations as op
+import stats as st
 
 receiver = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-receiver.connect(ADDR)
+receiver.connect(st.ADDR)
 
 def receiveFrame(frame):
-    n = int(frame[:N_SIZE]) # Extracting N
-    l = int(frame[N_SIZE:N_SIZE+LENGTH_SIZE])   # Extracting l(length of data)
-    data = str(frame[-l:])  # Extracting data
-    return n, l, data
+    crc = int(frame[-st.CRC_SIZE:])
+    
+    n = int(frame[:st.N_SIZE]) # Extracting N
+    
+    # Extracting length
+    l = int(frame[st.N_SIZE:st.N_SIZE+st.LENGTH_SIZE])  
+
+    data = frame[-st.CRC_SIZE-l:-st.CRC_SIZE]
+
+    # Extracting CRC code
+    crc = frame[-st.CRC_SIZE:]
+    return n, l, data, crc
 
 def recv():
-    frame = receiver.recv(25).decode()
-    n, l, data = receiveFrame(frame)
-    print(data)
+    while True:
+        frame = receiver.recv(25).decode()
+        n, l, data, crc = receiveFrame(frame)
+        
+        # Checking if disconnect statement is there
+        if data == 'q':
+            print("[CLOSING] Closing the receiver....")
+            break
+        
+        # Checking if crc code matches
+        if op.crc4itu(data) == crc:
+            print(f"[SUCCESS] Received message: {data}")
+        elif op.crc4itu(data) != crc:
+            print(f"[FAILURE] CRC codes do not match: {op.crc4itu(data)} and {crc}")
+        print("------------------------------------------------")
     
+recv()
