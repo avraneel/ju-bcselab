@@ -1,6 +1,6 @@
 import random
 import stats as st
-
+import time
 
 # For sake of convinience we are only injecting error in the data part
 
@@ -20,6 +20,10 @@ def noisychannel(frame):
             
     new_frame = frame[0:st.N_SIZE] + frame[st.N_SIZE:st.N_SIZE+st.LENGTH_SIZE] + ''.join(frame_list) + frame[-st.CRC_SIZE:]
     return new_frame
+
+def delay():
+    time.sleep(random.randint()% 6)
+
 
 def xor(a, b):
 
@@ -59,3 +63,32 @@ def crc4itu(frame):
     remainder = binary_division(frame + '0000', divisor)
     
     return str(remainder)
+
+
+# Wraps the data into the specified frame format
+def makeFrame(n, data):                               # n = nth frame to send
+    l = str(len(data))
+    rem = crc4itu(data)
+    
+    # PADDING
+    msg_n = str(n).zfill(st.N_SIZE)
+    msg_l = l.zfill(st.LENGTH_SIZE)
+    msg_data = data.zfill(st.DATA_SIZE)
+    msg_rem = rem.zfill(st.CRC_SIZE)
+    
+    frame = msg_n + msg_l + msg_data + msg_rem
+    return frame
+
+def receiveFrame(frame):
+    crc = int(frame[-st.CRC_SIZE:])
+    
+    n = int(frame[:st.N_SIZE]) # Extracting N
+    
+    # Extracting length
+    l = int(frame[st.N_SIZE:st.N_SIZE+st.LENGTH_SIZE])  
+
+    data = frame[-st.CRC_SIZE-l:-st.CRC_SIZE]
+
+    # Extracting CRC code
+    crc = frame[-st.CRC_SIZE:]
+    return n, l, data, crc

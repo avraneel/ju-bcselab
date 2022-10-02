@@ -3,39 +3,52 @@ import time
 import random
 import operations as op
 import stats as st
+import signal
+
+rn = 0
 
 receiver = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 receiver.connect(st.ADDR)
 
-def receiveFrame(frame):
-    crc = int(frame[-st.CRC_SIZE:])
-    
-    n = int(frame[:st.N_SIZE]) # Extracting N
-    
-    # Extracting length
-    l = int(frame[st.N_SIZE:st.N_SIZE+st.LENGTH_SIZE])  
+def isCorrupted(data, crc):
+    if op.crc4itu(data) != crc:
+        return True
+    else:
+        return False
 
-    data = frame[-st.CRC_SIZE-l:-st.CRC_SIZE]
-
-    # Extracting CRC code
-    crc = frame[-st.CRC_SIZE:]
-    return n, l, data, crc
-
-def recv():
+def Recv():
+    global rn
     while True:
-        frame = receiver.recv(25).decode()
-        n, l, data, crc = receiveFrame(frame)
+        # receiver.setblocking(0)
+        frame = receiver.recv(20).decode()
+        recv_n, _, data, crc = op.receiveFrame(frame)
         
         # Checking if disconnect statement is there
         if data == 'q':
             print("[CLOSING] Closing the receiver....")
             break
-        
-        # Checking if crc code matches
-        if op.crc4itu(data) == crc:
-            print(f"[SUCCESS] Received message: {data}")
-        elif op.crc4itu(data) != crc:
-            print(f"[FAILURE] CRC codes do not match: {op.crc4itu(data)} and {crc}")
+        if recv_n == rn:
+                print(f"[SUCCESS] Received message: {data}")
+                if isCorrupted(data, crc) == False:
+                    print(f"[FAILURE] CRC codes do not match: {op.crc4itu(data)} and {crc}")
+                send_Ack()
+                rn += 1
+                print(f"[ACK SENT] Sent ACK")
+                
         print("------------------------------------------------")
+   
+def send_Ack():
+    ack_frame = "11110000"
+    ack_frame = op.makeFrame(rn, ack_frame)
+    print(ack_frame)
+    print(rn)
+    receiver.send(ack_frame.encode())
     
-recv()
+def send_Nak():
+    nak_frame = "00001111"
+    nak_frame = op.makeFrame(rn, nak_frame)
+    print(nak_frame)
+    print(rn)
+    receiver.send(nak_frame.encode())
+    
+Recv()
