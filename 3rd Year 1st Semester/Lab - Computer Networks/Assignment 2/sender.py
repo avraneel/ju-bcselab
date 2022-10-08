@@ -1,3 +1,7 @@
+# Assumptions:
+# 1. Resending will resend without errors
+# 2. Error only occurs in data part
+
 import socket
 import time
 import random
@@ -5,7 +9,7 @@ import threading
 import operations as op
 import stats as st
 
-sn = 0
+sn = 0  # Sequence number
 
 # To calculate timeout
 TIMEOUT_LIMIT = 2                           
@@ -21,76 +25,111 @@ canSend = True
 copy_sn = 0
 copy_data = ""
 
-# sends the frame to receiver
-
 def timeout():
     global time1, time2
-    # print(time2-time1)
     if(time2 - time1 >= TIMEOUT_LIMIT):
         return True
     else:
         return False
 
 def send(conn, data):
-    global canSend
-    global sn
+    
+    global canSend, time1, sn, copy_sn, copy_data
+    
+    # Sending frames
     if canSend == True:
+        
+        # Making the frame
         frame = op.makeFrame(sn, data)
-        print(f"[ENCODING] Encoded frame to send: {frame}")
-        #frame = op.noisychannel(frame)
-        print(f"[ENCODING] Frame after noisy channel: {frame}")
-        global time1
-        time1 = time.time();
+        print(f"[ENCODING] Encoded frame: {frame}")
+        #time.sleep(random.randint()% 6)
+        frame = op.noisychannel(frame)
+        print(f"[NOISY] Frame after noise: {frame}")
+        
+        # Sending frame
         conn.send(frame.encode())
+        
+        # Storing Frame
         copy_data = data
         copy_sn = sn
+        
+        # Starting timer
+        time1 = time.time()
+        
         sn += 1
+        
         canSend = False
     
-    res1, res2 = recv_Ack(conn)    
-    if res1 == True and res2 == copy_sn:
-        copy_sn = 0
+    if data == "q":
+        return
     
-    global time2    
-    time2 = time.time()
+    # Receing ACK
+    recv_Ack(conn)  
     
-    print("I am here")
-    if timeout() == True:
+    # Resending Frame
+    while canSend == False:
         frame = op.makeFrame(copy_sn, copy_data)
-        print(f"[ENCODING] Encoded frame to send: {frame}")
-        #frame = op.noisychannel(frame)
-        print(f"[ENCODING] Frame after noisy channel: {frame}")
+        frame = op.noisychannel(frame)
+        print(f"[RESENDING] Resending frame: {frame}")
         time1 = time.time();
         conn.send(frame.encode())
+    
+        # Receving Ack for the resent frame    
+        recv_Ack(conn)
 
 def recv_Ack(conn):
-    global sn
-    global canSend
-    ack_frame = conn.recv(20).decode()
-    print(ack_frame)
-    n_recv, _, data,_ = op.receiveFrame(ack_frame)  
-    print(n_recv)                       # Extracting ACK data
-    if n_recv == copy_sn and data == '11110000':
-        print(f"[ACK RECV] ACK {n_recv} successfully received.")
+    
+    global sn, canSend, copy_data, copy_sn, time2
+    print("[Reciving ACK]......")
+
+    # Receiving ACK Frame
+    try:
+        conn.settimeout(0.5)
+        ack_frame = conn.recv(20).decode()
+    except:
+        # Timeout has occured, so we should resend the frame
+        print("---[TIMEOUT OCCURED]----")
+        return
+    
+    ackNo, _, data,_ = op.receiveFrame(ack_frame)  
+    
+    # Checking if ACK Valid
+    if ackNo == copy_sn and data == '11110000':
+        
+        # Stopping timer
+        time2 = time.time()
+        
+        print(f"[ACK RECV] ACK {ackNo} successfully received.")
+        
+        # Purging data
+        copy_sn = 0
+        copy_data = ""
+        
         canSend = True
-        return True, n_recv
-    else:
-        print(f"Wrong ACK frame.")
-        return False, n_recv
+        print("[TRANSACTION COMPLETED]")
+        return
+    
 
 def start():
-    sender.listen();
+    
+    # Listening
+    sender.listen()
     print(f"[LISTENING] Server is listening on {st.HOST_IP}")
+    
+    # Accepting receiver
     conn, addr = sender.accept()
     print(f"[CONNECTED] Connected to Process Id: {addr}")
+    
     while True:
         data = input('[INPUT] Enter data to send: ')
+        
         send(conn, data)
-        print("[Message passing SENT]")
+        
         if data == 'q':
             print("[CLOSING] Closing the sender....")
             conn.close()
-            break            
+            break 
+                   
         print("----------------------------------------------------")
         
 

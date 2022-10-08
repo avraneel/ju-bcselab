@@ -24,7 +24,6 @@ def noisychannel(frame):
 def delay():
     time.sleep(random.randint()% 6)
 
-
 def xor(a, b):
 
     val = ''
@@ -88,7 +87,9 @@ def receiveFrame(frame):
     l = int(frame[st.N_SIZE:st.N_SIZE+st.LENGTH_SIZE])  
 
     data = frame[-st.CRC_SIZE-l:-st.CRC_SIZE]
-
-    # Extracting CRC code
-    crc = frame[-st.CRC_SIZE:]
+    if data == "q":
+        crc = ""
+    else:
+        # Extracting CRC code
+        crc = frame[-st.CRC_SIZE:]
     return n, l, data, crc
