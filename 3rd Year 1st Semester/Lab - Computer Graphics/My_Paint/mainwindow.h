@@ -20,13 +20,6 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_show_axes_clicked();
-
-    void on_Draw_clicked();
-
-    void on_set_point1_clicked();
-
-    void on_set_point2_clicked();
 
     void on_pushButton_clicked();
 
@@ -54,6 +47,28 @@ private slots:
 
     void on_boundary_fill_4_clicked();
 
+    void on_flood_fill_clicked();
+
+    void on_translate_clicked();
+
+    void on_store_to_stack_clicked();
+
+    void on_scale_clicked();
+
+    void on_rotate_clicked();
+
+    void on_shear_clicked();
+
+    void on_reflect_x_clicked();
+
+    void on_reflect_y_clicked();
+
+    void on_boundary_8_clicked();
+
+    void on_flood_8_clicked();
+
+    void on_scanline_fill_clicked();
+
 private:
     Ui::MainWindow *ui;
     QPoint p1,p2;
@@ -64,7 +79,16 @@ private:
     void Bresenham_mid_point();
     void polar_Ellipse();
     void Bresenham_mid_point_Ellipse();
-    void boundary4fill(int x, int y, QColor newcolor, QColor edgecolor);
+    void boundary4fill(int x, int y, QRgb edgecolor, int r, int g, int b);
+    void boundary8fill(int x, int y, QRgb edgecolor, int r, int g, int b);
+    void floodfill(int x, int y, int r, int g, int b);
+    void floodfill8(int x, int y, int r, int g, int b);
+    void translation(int x, int y, int tx, int ty);
+    void scaling(double sx, double sy);
+    void rotation(int d);
+    void shearing(int shx, int shy);
+    void reflect_x();
+    void reflect_y();
 };
 
 #endif // MAINWINDOW_H

@@ -43,7 +43,7 @@ int main(int argc, char* argv[]) {
             sem_wait(S);
             printf("Child X. Iteration no.: %d\n", i+1);
             srand(time(NULL)^getpid());
-            sleep(rand() % 5);
+            sleep(rand() % 3);
             sem_post(Q);
         }
     }
@@ -52,7 +52,7 @@ int main(int argc, char* argv[]) {
             sem_wait(Q);
             printf("Child Y. Iteration no.: %d\n", i+1);
             srand(time(NULL)^getpid());
-            sleep(rand() % 5);
+            sleep(rand() % 3);
             sem_post(T);
         }
     }
@@ -61,7 +61,7 @@ int main(int argc, char* argv[]) {
             sem_wait(T);
             printf("Child Z. Iteration no.: %d\n", i+1);
             srand(time(NULL)^getpid());
-            sleep(rand() % 5);
+            sleep(rand() % 3);
             sem_post(S);
         }
     }

@@ -3,7 +3,7 @@ import time
 import random
 
 # SOCKET VARIABLES
-PORT = 8080
+PORT = 8081
 HOST_IP = socket.gethostbyname(socket.gethostname())
 ADDR = (HOST_IP, PORT)
 
