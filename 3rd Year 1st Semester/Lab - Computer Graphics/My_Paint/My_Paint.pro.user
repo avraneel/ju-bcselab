@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 8.0.1, 2022-11-06T11:03:06. -->
+<!-- Written by QtCreator 8.0.1, 2022-11-15T21:50:13. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -95,7 +95,7 @@
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.BuildConfiguration.0">
     <value type="int" key="EnableQmlDebugging">0</value>
     <value type="QString" key="ProjectExplorer.BuildConfiguration.BuildDirectory">D:\BCSE\3rd Year 1st Semester\Lab - Computer Graphics\My_Paint</value>
-    <value type="QString" key="ProjectExplorer.BuildConfiguration.BuildDirectory.shadowDir">D:/BCSE/3rd Year 1st Semester/Lab - Computer Graphics/build-My_Paint-Desktop_Qt_6_3_2_MinGW_64_bit-Debug</value>
+    <value type="QString" key="ProjectExplorer.BuildConfiguration.BuildDirectory.shadowDir">D:/BCSE/3rd Year 1st Semester/Lab - Computer Graphics/My_Paint</value>
     <valuemap type="QVariantMap" key="ProjectExplorer.BuildConfiguration.BuildStepList.0">
      <valuemap type="QVariantMap" key="ProjectExplorer.BuildStepList.Step.0">
       <value type="bool" key="ProjectExplorer.BuildStep.Enabled">true</value>
@@ -235,8 +235,9 @@
     <valuelist type="QVariantList" key="CustomOutputParsers"/>
     <value type="int" key="PE.EnvironmentAspect.Base">2</value>
     <valuelist type="QVariantList" key="PE.EnvironmentAspect.Changes"/>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">Qt4ProjectManager.Qt4RunConfiguration:D:/BCSE/3rd Year 1st Semester/Lab - Computer Graphics/My_Paint/My_Paint.pro</value>
-    <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">D:/BCSE/3rd Year 1st Semester/Lab - Computer Graphics/My_Paint/My_Paint.pro</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">My_Paint2</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">Qt4ProjectManager.Qt4RunConfiguration:D:/GitHub/bcselab/3rd Year 1st Semester/Lab - Computer Graphics/My_Paint/My_Paint.pro</value>
+    <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">D:/GitHub/bcselab/3rd Year 1st Semester/Lab - Computer Graphics/My_Paint/My_Paint.pro</value>
     <value type="bool" key="RunConfiguration.UseCppDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseCppDebuggerAuto">true</value>
     <value type="bool" key="RunConfiguration.UseLibrarySearchPath">true</value>
